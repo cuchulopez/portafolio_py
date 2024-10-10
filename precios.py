@@ -7,7 +7,7 @@ import yfinance as yf
 # cedears = [AAPL.BA]
 # ratios = { 'AAPL.BA':10 }
 # tickers = ['AAPL']
-
+ba = ".BA"
 
 def obtener_precios_acciones():
        
@@ -39,13 +39,23 @@ def obtener_precios_cedears():
     return precios_cedears
 
 def obtener_precios_ccl(precios_acciones, precios_cedears):
+
+    
     
     precios_ccl = {}
 
     for ticker,precio in precios_acciones.items():
-        cedear = ''.join(list(filter(lambda x: ticker in x, precios_cedears.keys())))
-        ccl = (ratios.get(cedear) * precios_cedears[cedear])/precio
+        # cedear = ''.join(list(filter(lambda x: ticker in x, precios_cedears.keys())))
         
+        if ticker == "YPF":
+            cedear = "YPFD.BA"
+        else:
+            cedear = ticker + ba
+
+        try:
+            ccl = (ratios.get(cedear) * precios_cedears[cedear])/precio
+        except:
+            ccl = 0
         precios_ccl[cedear] = ccl
     
     return precios_ccl
@@ -63,13 +73,20 @@ def obtener_valorizado(precios_cedears):
 def obtener_tabla(precios_acciones,precios_cedears,precios_ccl,valorizado):
     table = PrettyTable()
     table.align = "r"
-    table.field_names = ["Accion","Accion (US$)","Ratios","Cantidad","CEDEARs ($)","CCL ($)","Valorizado en $","Valorizado en US$"]
+    table.field_names = ["Accion","Accion (US$)","CEDEARs ($)","CCL ($)","Ratios","Cantidad","Valorizado en $","Valorizado en US$"]
 
     for ticker, precio in precios_acciones.items():
-        cedear = ''.join(list(filter(lambda x: ticker in x, precios_cedears.keys())))
+        # cedear = ''.join(list(filter(lambda x: ticker in x, precios_cedears.keys())))
         precio = precio
-        table.add_row([ticker,"{:.2f}".format(precio),ratios.get(cedear),cant_cedears.get(cedear),"{:.2f}".format(precios_cedears[cedear]),"{:.2f}".format(precios_ccl[cedear]),"{:.2f}".format(valorizado[cedear]),"{:.2f}".format(valorizado[cedear]/precios_ccl[cedear])])
+        if ticker == "YPF":
+            cedear = "YPFD.BA"
+        else:
+            cedear = ticker + ba
 
+        try:
+            table.add_row([ticker,"{:.2f}".format(precio),"{:.2f}".format(precios_cedears[cedear]),"{:.2f}".format(precios_ccl[cedear]),ratios.get(cedear),cant_cedears.get(cedear),"{:.2f}".format(valorizado[cedear]),"{:.2f}".format(valorizado[cedear]/precios_ccl[cedear])])
+        except:
+            table.add_row([ticker,"{:.2f}".format(precio),"{:.2f}".format(precios_cedears[cedear]),"{:.2f}".format(precios_ccl[cedear]),ratios.get(cedear),cant_cedears.get(cedear),"{:.2f}".format(valorizado[cedear]),"{:.2f}".format(valorizado[cedear]/precios_ccl[cedear])])
     return table
 
 
