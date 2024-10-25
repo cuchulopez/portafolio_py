@@ -1,20 +1,28 @@
 from prettytable import PrettyTable
-from var import cant_cedears,cedears,ratios,tickers
+from var import tickers_full
 import yfinance as yf
 
+
 # Ejemplo:
-# cant_cedears = { 'AAPL.BA':1 }
-# cedears = [AAPL.BA]
-# ratios = { 'AAPL.BA':10 }
-# tickers = ['AAPL']
+# Formato de variable tickers_full (tuplas) = ({Acción:Cantidad de CEDEARS}, Ratio)
+
 ba = ".BA"
+cant_cedears = {}
+ratios = {}
+
+for ticker_full in tickers_full:
+    cedear = list(ticker_full[0].keys())[0] + ba
+
+    ratios[cedear] = ticker_full[1]
+    cant_cedears[cedear] = list(ticker_full[0].values())[0]
 
 def obtener_precios_acciones():
        
     precios_acciones = {}
 
-    for ticker in tickers:
+    for ticker_full in tickers_full:
         try:
+            ticker = list(ticker_full[0].keys())[0]
             data = yf.Ticker(ticker)
             precios_acciones[ticker] = data.history(period="1d")["Close"].iloc[-1]
         except:
@@ -23,11 +31,14 @@ def obtener_precios_acciones():
 
     return precios_acciones
 
+
+
 def obtener_precios_cedears():
 
     precios_cedears = {}
     
-    for cedear in cedears:
+    for ticker_full in tickers_full:
+        cedear = list(ticker_full[0].keys())[0] + ba
         try:
             data = yf.Ticker(cedear)
             precios_cedears[cedear] = data.history(period="1d")["Close"].iloc[-1]
@@ -38,12 +49,12 @@ def obtener_precios_cedears():
 
     return precios_cedears
 
+
+
 def obtener_precios_ccl(precios_acciones, precios_cedears):
 
-    
-    
     precios_ccl = {}
-
+   
     for ticker,precio in precios_acciones.items():
         # cedear = ''.join(list(filter(lambda x: ticker in x, precios_cedears.keys())))
         
@@ -74,6 +85,8 @@ def obtener_tabla(precios_acciones,precios_cedears,precios_ccl,valorizado):
     table = PrettyTable()
     table.align = "r"
     table.field_names = ["Accion","Accion (US$)","CEDEARs ($)","CCL ($)","Ratios","Cantidad","Valorizado en $","Valorizado en US$"]
+
+    # ratios = 
 
     for ticker, precio in precios_acciones.items():
         # cedear = ''.join(list(filter(lambda x: ticker in x, precios_cedears.keys())))

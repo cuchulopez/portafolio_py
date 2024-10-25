@@ -1,0 +1,14 @@
+services:
+  Db:
+    image: postgres:16.4-alpine
+    restart: always
+    ports:
+    - 54321:5432
+    environment:
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
+    volumes:
+    - db:/var/lib/postgresql/data
+volumes:
+  db:
+    driver: local
