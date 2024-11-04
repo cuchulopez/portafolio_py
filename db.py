@@ -4,6 +4,34 @@ from datetime import datetime
 from var import tickers_full
 # Diccionario Datos de Conexion
 
+def get_portafolio():
+    portafolio = {}
+    try:
+        db = psycopg2.connect(
+            user = USER_DB,
+            password = PASS_DB,
+            host = HOST_DB,
+            database = DB,
+            port = PORT_DB
+        )
+        cursor = db.cursor()
+
+        query = f"select ticker,ratio,cantidad from public.portafolio"
+        cursor.execute(query, )
+
+        for ticker,ratio,cantidad in cursor:
+            print(f"Accion: {ticker} - Ratio: {ratio} - Cantidad: {cantidad}")
+            
+        
+        cursor.close()
+        db.close()
+
+        return portafolio
+
+
+    except (Exception, psycopg2.DatabaseError) as e:
+        print(f"Error connecting to MariaDB Platform: {e}")
+
 
 def select(accion):
     try:
@@ -38,6 +66,26 @@ def select(accion):
         # conn.commit()
 
 
+def update_ticker(ticker,new_cant):
+    try:
+        db = psycopg2.connect(
+            user = USER_DB,
+            password = PASS_DB,
+            host = HOST_DB,
+            database = DB,
+            port = PORT_DB
+        )
+        db.autocommit=True
+        cursor = db.cursor()
+        query = f"UPDATE portafolio SET cantidad = {new_cant} WHERE ticker = '{ticker}'"
+        cursor.execute(query)
+        
+        cursor.close()
+        db.close()
+
+    except (Exception, psycopg2.DatabaseError) as e:
+        print(f"Error connecting to MariaDB Platform: {e}")
+
 def update_data(precios_acciones,precios_cedears):
     fecha = datetime.now().strftime("%Y-%m-%d") # YYYY-MM-DD
     hora = datetime.now().strftime("%H:%M:%S")
@@ -52,7 +100,7 @@ def update_data(precios_acciones,precios_cedears):
         cursor = db.cursor()
         
         query = "INSERT INTO portafolio.precios (id_ticker,fecha,hora) VALUES (?,?,?)"
-        cursor.execute("INSERT INTO portafolio.precios (id_ticker,fecha,hora) VALUES (?,?,?)",(2,fecha,hora))
+        cursor.execute(query,(2,fecha,hora))
 
         cursor.close()
         db.close()
@@ -66,4 +114,6 @@ def update_data(precios_acciones,precios_cedears):
     print(fecha, hora)
 
 if __name__ == "__main__":
-    select("WMT")
+    # portafolio = get_portafolio()
+    update_ticker("PG",49)
+    get_portafolio()

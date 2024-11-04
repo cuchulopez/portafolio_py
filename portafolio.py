@@ -1,6 +1,6 @@
 from datetime import datetime
 from precios import *
-from db import select,update_data
+# from db import update_data
 
 
 if __name__ == "__main__":
@@ -13,9 +13,7 @@ if __name__ == "__main__":
    valorizado = obtener_valorizado(precios_cedears)
    table_portafolio = obtener_tabla(precios_acciones,precios_cedears,precios_ccl,valorizado)
    
-   # select('NDVA')
    # update_data(precios_acciones,precios_cedears)
-
 
    for cedear, precio in valorizado.items():
       valorizado_total += precio
