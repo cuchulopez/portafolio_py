@@ -1,7 +1,8 @@
 portafilio-env/
 config.py
 var.py
-
+db/
+portafolio/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
