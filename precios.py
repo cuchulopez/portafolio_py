@@ -11,7 +11,11 @@ cant_cedears = {}
 ratios = {}
 
 for ticker_full in tickers_full:
-    cedear = list(ticker_full[0].keys())[0] + ba
+    ticker = list(ticker_full[0].keys())[0]
+    if ticker == "YPF":
+        cedear = "YPFD.BA"
+    else:
+        cedear = ticker + ba
 
     ratios[cedear] = ticker_full[1]
     cant_cedears[cedear] = list(ticker_full[0].values())[0]
@@ -38,7 +42,12 @@ def obtener_precios_cedears():
     precios_cedears = {}
     
     for ticker_full in tickers_full:
-        cedear = list(ticker_full[0].keys())[0] + ba
+        ticker = list(ticker_full[0].keys())[0]
+        if ticker == "YPF":
+            cedear = "YPFD.BA"
+        else:
+            cedear = ticker + ba
+
         try:
             data = yf.Ticker(cedear)
             precios_cedears[cedear] = data.history(period="1d")["Close"].iloc[-1]
