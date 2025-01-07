@@ -7,11 +7,11 @@ if __name__ == "__main__":
    fecha_hoy = datetime.now().strftime("%H:%M - %d/%m/%Y")
    valorizado_total = 0
 
-   precios_acciones = obtener_precios_acciones()
+   precios_acciones,precios_acciones_dia_anterior = obtener_precios_acciones()
    precios_cedears = obtener_precios_cedears()
    precios_ccl = obtener_precios_ccl(precios_acciones, precios_cedears)
    valorizado = obtener_valorizado(precios_cedears)
-   table_portafolio = obtener_tabla(precios_acciones,precios_cedears,precios_ccl,valorizado)
+   table_portafolio = obtener_tabla(precios_acciones,precios_cedears,precios_acciones_dia_anterior,precios_ccl,valorizado)
    
    # update_data(precios_acciones,precios_cedears)
 
